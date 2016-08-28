@@ -10,6 +10,10 @@ Pila::Pila()
 
 Pila::~Pila()
 {
+	while (this->tamanio() != 0)
+	{
+		desapilar();
+	}
 }
 
 void Pila::apilar(ElemPila& elem)
@@ -41,14 +45,32 @@ ElemPila& Pila::tope()
 void Pila::desapilar()
 {
 	Nodo* antPrimero = this->prim;
-	Nodo* siguiente = antPrimero->sig;
-	this->prim = siguiente;
-	antPrimero = NULL;
-	delete antPrimero;
-	this->tam--;
+	if (antPrimero != NULL) {
+		Nodo* siguiente = antPrimero->sig;
+		this->prim = siguiente;
+		antPrimero = NULL;
+		delete antPrimero;
+		this->tam--;
+	}
 }
 
 Nat Pila::tamanio() const
 {
 	return this->tam;
+}
+
+void Pila::mostrar(ostream& os) const
+{
+	os << "[";
+	unsigned long i = 0;
+	unsigned long t = this->tam;
+	Nodo* aMostrar = this->prim;
+	while (i < t)
+	{
+		os << aMostrar->elem;
+		if (i < t - 1) os << ", ";
+		aMostrar = aMostrar->sig;
+		i++;
+	}
+	os << "]";
 }
