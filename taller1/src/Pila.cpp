@@ -20,7 +20,7 @@ void Pila::apilar(ElemPila& elem)
 {
 	Nodo* n = new Nodo;
 	n->elem = elem;
-	if (tam == 0)
+	if (this->tam == 0)
 	{
 		n->sig = NULL;
 	}
@@ -29,6 +29,8 @@ void Pila::apilar(ElemPila& elem)
 		n->sig = prim;
 	}
 	this->prim = n;
+	n = NULL;
+	delete n;
 	this->tam++;
 }
 
@@ -59,6 +61,27 @@ Nat Pila::tamanio() const
 	return this->tam;
 }
 
+Pila& Pila::operator=(const Pila & aCopiar)
+{
+	int t = aCopiar.tam;
+	ElemPila eps [t] = {};
+	int i = 0;
+	Nodo* n = aCopiar.prim;
+	while (i < t)
+	{
+		eps[i] = n->elem;
+		n = n->sig;
+		i++;
+	}
+	i--;
+	while (i >= 0)
+	{
+		this->apilar(eps[i]);
+		i--;
+	}
+	return *this;
+}
+
 void Pila::mostrar(ostream& os) const
 {
 	os << "[";
@@ -72,5 +95,7 @@ void Pila::mostrar(ostream& os) const
 		aMostrar = aMostrar->sig;
 		i++;
 	}
+	aMostrar = NULL;
+	delete aMostrar;
 	os << "]";
 }
