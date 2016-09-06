@@ -64,6 +64,7 @@ void test_apilar_uno()
 
   p.apilar(1);
 
+
   ASSERT_EQ(p.tamanio(), 1);
   ASSERT_EQ(to_s(p), "[1]");
 }
@@ -110,6 +111,56 @@ void pila_de_pilas()
 {
   Pila<Pila<aed2::Nat> > pp;
 
+  std::cout << std::endl;
+  std::cout << "arranca pila de pilas" << std::endl;
+
+  {
+    Pila<aed2::Nat> p;
+    p.apilar(1);
+    p.apilar(2);
+
+    std::cout << std::endl;
+    std::cout << "p.tamanio " << p.tamanio() << std::endl;
+    std::cout << "p " << p << std::endl;
+
+    std::cout << "arranca pp.apilar(p)" << std::endl;
+    pp.apilar(p);
+    std::cout << "pp.tamanio " << pp.tamanio() << std::endl;
+  }
+
+  // std::cout << std::endl;
+  // std::cout << "pp.tamanio" << pp.tamanio() << std::endl;
+
+  ASSERT_EQ(pp.tamanio(), 1);
+  ASSERT_EQ(to_s(pp), "[[2, 1]]");
+
+  {
+    Pila<aed2::Nat> p;
+    p.apilar(3);
+    p.apilar(4);
+
+    pp.apilar(p);
+  }
+
+  ASSERT_EQ(pp.tamanio(), 2);
+  ASSERT_EQ(to_s(pp), "[[4, 3], [2, 1]]");
+
+  {
+    Pila<aed2::Nat> p;
+    p.apilar(5);
+    p.apilar(6);
+
+    pp.apilar(p);
+  }
+
+  ASSERT_EQ(pp.tamanio(), 3);
+  ASSERT_EQ(to_s(pp), "[[6, 5], [4, 3], [2, 1]]");
+}
+
+void copiar_pila_de_pilas()
+{
+  Pila<Pila<aed2::Nat> > pp;
+
   {
     Pila<aed2::Nat> p;
     p.apilar(1);
@@ -140,13 +191,15 @@ void pila_de_pilas()
     pp.apilar(p);
   }
 
-  ASSERT_EQ(pp.tamanio(), 3);
-  ASSERT_EQ(to_s(pp), "[[6, 5], [4, 3], [2, 1]]");
-}
-
-void copiar_pila_de_pilas()
-{
-  // TODO completar...
+  Pila<Pila<aed2::Nat> > pp1 = Pila<Pila<aed2::Nat> >(pp);
+  Pila<Pila<aed2::Nat> > p2;
+  std::cout << std::endl;
+  std::cout << "pp1: " << to_s(pp1) << std::endl;
+  std::cout << "pp: " << to_s(pp) << std::endl;
+  ASSERT_EQ(to_s(pp1), to_s(pp));
+  p2 = pp1;
+  std::cout << "p2: " << to_s(p2) << std::endl;
+  ASSERT_EQ(to_s(pp1), to_s(p2));
 }
 
 int main()

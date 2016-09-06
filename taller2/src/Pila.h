@@ -83,9 +83,12 @@ class Pila
       T elem;
       Nodo* sig;
 
-      Nodo() {
-
+      Nodo(T e)
+      : elem (e)
+      {
+        sig = NULL;
       }
+
     };
 
     Nodo* tope_;
@@ -95,50 +98,82 @@ class Pila
 template <typename T>
 Pila<T>::Pila()
 {
-  // TODO completar...
+    this->tope_ = NULL;
+    this->tamanio_ = 0;
 }
 
 template <typename T>
 Pila<T>::Pila(const Pila& otra)
 {
-  // TODO completar...
+  this->tope_ = NULL;
+  this->tamanio_ = 0;
+  if (!otra.esVacia())
+  {
+    // int t = otra.tamanio_;
+    aed2::Nat t = otra.tamanio_;
+    // int i = 0;
+    aed2::Nat i = 0;
+    Pila<T>* p = new Pila<T>();
+    Nodo* n = otra.tope_;
+    while (i < t)
+    {
+      p->apilar(n->elem);
+      n = n->sig;
+      i++;
+    }
+    i = 0;
+    while (i < t)
+    {
+      this->apilar(p->tope());
+      p->desapilar();
+      i++;
+    }
+    n = NULL;
+    delete n;
+    p = NULL;
+    delete p;
+  }
 }
 
 template <typename T>
 Pila<T>::~Pila()
 {
-  // TODO completar...
+  while (this->tamanio_ != 0)
+  {
+    desapilar();
+  }
 }
 
 template <typename T>
-void Pila<T>::apilar(const T& elem)
+void Pila<T>::apilar(const T& e)
 {
-  Nodo* n = new Nodo;
-  n->elem = elem;
-  if (this->tam == 0)
+  Nodo* n = new Nodo(e);
+  if (this->tamanio_ == 0)
   {
     n->sig = NULL;
   }
   else
   {
-    n->sig = prim;
+    n->sig = this->tope_;
   }
-  this->prim = n;
+  this->tope_ = n;
   n = NULL;
   delete n;
-  this->tam++;
+  this->tamanio_++;
 }
 
 template <typename T>
 void Pila<T>::desapilar()
 {
-  Nodo* antPrimero = this->prim;
+  Nodo* antPrimero = this->tope_;
   if (antPrimero != NULL) {
     Nodo* siguiente = antPrimero->sig;
-    this->prim = siguiente;
+    this->tope_ = siguiente;
     antPrimero = NULL;
     delete antPrimero;
-    this->tam--;
+    siguiente = NULL;
+    delete siguiente;
+    this->tamanio_--;
   }
 }
 
@@ -151,13 +186,13 @@ bool Pila<T>::esVacia() const
 template <typename T>
 T& Pila<T>::tope()
 {
-  return this->tope_;
+  return this->tope_->elem;
 }
 
 template <typename T>
 const T& Pila<T>::tope() const
 {
-  return this->tope_;
+  return this->tope_->elem;
 }
 
 template <typename T>
@@ -167,29 +202,53 @@ aed2::Nat Pila<T>::tamanio() const
 }
 
 template <typename T>
-Pila<T>& Pila<T>::operator = (const Pila& otra)
+Pila<T>& Pila<T>::operator=(const Pila& otra)
 {
-  int t = aCopiar.tam;
-  ElemPila eps [t] = {};
-  int i = 0;
-  Nodo* n = aCopiar.prim;
+  while (this->tamanio_ != 0)
+  {
+    desapilar();
+  }
+  aed2::Nat t = otra.tamanio_;
+  aed2::Nat i = 0;
+  // int t = otra.tamanio_;
+  // int i = 0;
+  Pila<T>* p = new Pila<T>();
+  Nodo* n = otra.tope_;
   while (i < t)
   {
-    eps[i] = n->elem;
+    p->apilar(n->elem);
     n = n->sig;
     i++;
   }
-  i--;
-  while (i >= 0)
+  i = 0;
+  while (i < t)
   {
-    this->apilar(eps[i]);
-    i--;
+    this->apilar(p->tope());
+    p->desapilar();
+    i++;
   }
+  n = NULL;
+  delete n;
+  p = NULL;
+  delete p;
   return *this;
 }
 
 template <typename T>
 std::ostream& operator << (std::ostream& os, const Pila<T>& pila)
 {
-  // TODO completar...
+  os << "[";
+  aed2::Nat i = 0;
+  aed2::Nat t = pila.tamanio_;
+  Pila<T>* p = new Pila<T>(pila);
+  while (i < t)
+  {
+    os << p->tope();
+    if (i < t - 1) os << ", ";
+    p->desapilar();
+    i++;
+  }
+  p = NULL;
+  delete p;
+  os << "]";
 }
