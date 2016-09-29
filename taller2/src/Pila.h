@@ -128,12 +128,6 @@ Pila<T>::Pila(const Pila& otra)
       p->desapilar();
       i++;
     }
-
-    //aca no tenes q borrar estas variables, por el aliasing podrias estan rompiendo toda la pila
-    //o sea si [e_1,e_2,e_3] y e_3 = n, si n=null => e_3 = null y todo mal!!!
-    n = NULL;
-    delete n;
-    p = NULL;
     delete p;
   }
 }
@@ -160,9 +154,6 @@ void Pila<T>::apilar(const T& e)
     n->sig = this->tope_;
   }
   this->tope_ = n;
-  //lo mismo q arriba con este delete, los deletes van en el desapilar 
-  n = NULL;
-  delete n;
   this->tamanio_++;
 }
 
@@ -173,12 +164,7 @@ void Pila<T>::desapilar()
   if (antPrimero != NULL) {
     Nodo* siguiente = antPrimero->sig;
     this->tope_ = siguiente;
-    //si le asignas null antes de borrarlo perdes la referencia, directamente tenes q llamar al delete y si a siguiente lo pones en null y y lo deleteas, tope_ = siguiente = null y encima deleteado, se rompio toda tu pila y todo mal!!!
-    antPrimero = NULL;
-    //Este delete deberia ir fuera del if, siempre que no sea una lista vacia deberias poder borrar el primero cuando desapilas
     delete antPrimero;
-    siguiente = NULL;
-    delete siguiente;
     this->tamanio_--;
   }
 }
@@ -233,10 +219,7 @@ Pila<T>& Pila<T>::operator=(const Pila& otra)
     p->desapilar();
     i++;
   }
-  //no lo voy a decir de nuevo (?)
-  n = NULL;
   delete n;
-  p = NULL;
   delete p;
   return *this;
 }
@@ -244,7 +227,6 @@ Pila<T>& Pila<T>::operator=(const Pila& otra)
 template <typename T>
 std::ostream& operator << (std::ostream& os, const Pila<T>& pila)
 {
-  // Este codigo me suena familiar... jaja
   os << "[";
   aed2::Nat i = 0;
   aed2::Nat t = pila.tamanio_;
@@ -256,7 +238,6 @@ std::ostream& operator << (std::ostream& os, const Pila<T>& pila)
     p->desapilar();
     i++;
   }
-  p = NULL;
   delete p;
   os << "]";
 }
