@@ -63,7 +63,7 @@ private:
 
     // funciones auxiliares
 
-    void find(const T &key, Nodo *&f, Nodo *&c);
+    void find(const T &key, Nodo *&f, Nodo *&c) const;
 
     bool hasTwoChildren(Nodo *child);
 
@@ -78,6 +78,8 @@ private:
     void deleteLeafNode(Nodo *&father, Nodo *&child);
 
     void deleteTwoChildrenRoot(Nodo *&father, Nodo *&child);
+    void inOrder(Nodo *&r, std::ostream &os) const;
+    void runTree(Nodo *&r);
 
 };
 
@@ -90,6 +92,8 @@ Conjunto<T>::Conjunto() : raiz_(NULL) {}
 
 template<class T>
 Conjunto<T>::~Conjunto() {
+    Nodo* r = this->raiz_;
+    runTree(r);
 }
 
 template<class T>
@@ -191,11 +195,14 @@ const T& Conjunto<T>::maximo() const {
 
 template<class T>
 void Conjunto<T>::mostrar(std::ostream &os) const {
-
+    os << "[";
+    Nodo* r = this->raiz_;
+    inOrder(r, os);
+    os << "]";
 }
 
 template<class T>
-void Conjunto<T>::find(const T &key, Nodo *&f, Nodo *&c) {
+void Conjunto<T>::find(const T &key, Nodo *&f, Nodo *&c) const{
     bool exists = false;
     Nodo* n = this->raiz_;
     f = n;
@@ -302,13 +309,31 @@ void Conjunto<T>::deleteTwoChildrenRoot(Nodo *&father, Nodo *&child) {
     Nodo* p;
     find(lastNode->valor, p, lastNode);
     if (hasOneChild(lastNode)) {
-        p->der = lastNode->izq;
+        deleteOneChildNode(p, lastNode);
     } else {
-        p->der = NULL;
+        deleteLeafNode(p, lastNode);
     }
     lastNode->der = father->der;
     lastNode->izq = father->izq;
     this->raiz_ = lastNode;
+}
+
+template<class T>
+void Conjunto<T>::inOrder(Nodo *&r, std::ostream &os) const {
+    if (r != NULL) {
+        inOrder(r->izq, os);
+        os << r->valor << ", ";
+        inOrder(r->der, os);
+    }
+}
+
+template<class T>
+void Conjunto<T>::runTree(Nodo *&r) {
+    if (r != NULL) {
+        runTree(r->izq);
+        runTree(r->der);
+        delete r;
+    }
 }
 
 #endif // CONJUNTO_HPP_
