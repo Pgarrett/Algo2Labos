@@ -65,13 +65,19 @@ private:
 
     void find(const T &key, Nodo *&f, Nodo *&c);
 
-    bool isComplex(Nodo *child);
+    bool hasTwoChildren(Nodo *child);
 
-    bool isLeaf(Nodo *child);
+    bool hasOneChild(Nodo *child);
 
-    unsigned int countChilds(Nodo *n) const;
+    unsigned int countChildren(Nodo *n) const;
 
-    void deleteComplex(Nodo *&father, Nodo *&child);
+    void deleteTwoChildrenNode(Nodo *&father, Nodo *&child);
+
+    void deleteOneChildNode(Nodo *&father, Nodo *&child);
+
+    void deleteLeafNode(Nodo *&father, Nodo *&child);
+
+    void deleteTwoChildrenRoot(Nodo *&father, Nodo *&child);
 
 };
 
@@ -135,8 +141,8 @@ unsigned int Conjunto<T>::cardinal() const {
     if (root != NULL) {
         Nodo *right = root->der;
         Nodo *left = root->izq;
-        result += countChilds(right);
-        result += countChilds(left);
+        result += countChildren(right);
+        result += countChildren(left);
     }
 
     return result;
@@ -148,11 +154,14 @@ void Conjunto<T>::remover(const T &clave) {
     Nodo *child;
     find(clave, father, child);
     if (child != NULL) {
-        if (isComplex(child)) {
-            deleteComplex(father, child);
-        } else if (isLeaf(child)) {
+        if (hasTwoChildren(child)) {
+            deleteTwoChildrenNode(father, child);
+        } else if (hasOneChild(child)) {
+            deleteOneChildNode(father, child);
         } else {
+            deleteLeafNode(father, child);
         }
+        delete child;
     }
 }
 
@@ -205,45 +214,101 @@ void Conjunto<T>::find(const T &key, Nodo *&f, Nodo *&c) {
 }
 
 template<class T>
-bool Conjunto<T>::isComplex(Nodo *child) {
+bool Conjunto<T>::hasTwoChildren(Nodo *child) {
     return child->izq != NULL && child->der != NULL;
 }
 
 template<class T>
-bool Conjunto<T>::isLeaf(Nodo *child) {
+bool Conjunto<T>::hasOneChild(Nodo *child) {
     return child->izq != NULL || child->der != NULL;
 }
 
 template<class T>
-unsigned int Conjunto<T>::countChilds(Nodo *n) const {
+unsigned int Conjunto<T>::countChildren(Nodo *n) const {
     if (n == NULL) {
         return 0;
     }
-    return 1 + countChilds(n->izq) + countChilds(n->der);
+    return 1 + countChildren(n->izq) + countChildren(n->der);
 }
 
 template<class T>
-void Conjunto<T>::deleteComplex(Nodo *&father, Nodo *&child) {
-    Nodo* n = child->izq;
-    Nodo* p = n;
+void Conjunto<T>::deleteTwoChildrenNode(Nodo *&father, Nodo *&child) {
+    if (father->valor == child->valor) {
+        deleteTwoChildrenRoot(father, child);
+    } else {
+        Nodo* lastNode;
+        Nodo* n = child->izq;
+        while (n != NULL) {
+            lastNode = n;
+            n = n->der;
+        }
+        Nodo* p;
+        find(lastNode->valor, p, lastNode);
+        if (hasOneChild(lastNode)) {
+            deleteOneChildNode(p, lastNode);
+        } else {
+            deleteLeafNode(p, lastNode);
+        }
+        lastNode->der = child->der;
+        lastNode->izq = child->izq;
+        if (father->izq->valor == child->valor) {
+            father->izq = lastNode;
+        } else {
+            father->der = lastNode;
+        }
+    }
+}
+
+template<class T>
+void Conjunto<T>::deleteOneChildNode(Nodo *&father, Nodo *&child) {
+    if (father->valor == child->valor) {
+        if (child->izq != NULL) {
+            this->raiz_ = new Nodo(child->izq->valor);
+        } else {
+            this->raiz_ = new Nodo(child->der->valor);
+        }
+    } else {
+        Nodo* v;
+        if (child->izq != NULL) {
+            v = child->izq;
+        } else {
+            v = child->der;
+        }
+        if (father->izq->valor == child->valor) {
+            father->izq = v;
+        } else {
+            father->der = v;
+        }
+    }
+}
+
+template<class T>
+void Conjunto<T>::deleteLeafNode(Nodo *&father, Nodo *&child) {
+    if (father->izq->valor == child->valor) {
+        father->izq = NULL;
+    } else {
+        father->der = NULL;
+    }
+}
+
+template<class T>
+void Conjunto<T>::deleteTwoChildrenRoot(Nodo *&father, Nodo *&child) {
+    Nodo* lastNode;
+    Nodo* n = this->raiz_->izq;
     while (n != NULL) {
-        p = n;
+        lastNode = n;
         n = n->der;
     }
-    if (father->izq->valor == child->valor) {
-        father->izq = new Nodo(p->valor);
+    Nodo* p;
+    find(lastNode->valor, p, lastNode);
+    if (hasOneChild(lastNode)) {
+        p->der = lastNode->izq;
     } else {
-        father->der = new Nodo(p->valor);
-        father->der->der = child->der;
+        p->der = NULL;
     }
-    if (child->izq != NULL) {
-        father->izq->izq = child->izq;
-    }
-    if (child->der != NULL) {
-        father->izq->der = child->der;
-    }
-    delete p;
-    delete child;
+    lastNode->der = father->der;
+    lastNode->izq = father->izq;
+    this->raiz_ = lastNode;
 }
 
 #endif // CONJUNTO_HPP_

@@ -30,6 +30,8 @@ void test_remover() {
  	// - Borrar una hoja
  	// - Borrar un nodo interno con un hijo
  	// - Borrrun nodo interno con dos hijos
+
+
  	Conjunto<int> c;
  	c.insertar(42);
  	c.insertar(30);
@@ -54,7 +56,7 @@ void test_remover() {
 	bool pertenencia;
 
 	// caso que chequea borrar una hoja
-	c.remover(15);
+	c.remover(98);
 	pertenencia = c.pertenece(42) && !c.pertenece(44) && c.pertenece(104)
 				&& c.pertenece(450) && c.pertenece(-46) && c.pertenece(-460)
 				&& c.pertenece(130) && c.pertenece(43);
