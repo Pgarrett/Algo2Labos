@@ -11,6 +11,7 @@ std::string to_s(const T& m) {
 }
 
 void test_insertar() {
+    std::cout << std::endl;
 	Conjunto<int> c;
 	c.insertar(42);
 	ASSERT( c.pertenece(42) );
@@ -19,6 +20,7 @@ void test_insertar() {
 }
 
 void test_cardinal() {
+    std::cout << std::endl;
 	// Completar
 	Conjunto<int> c;
 	c.insertar(42);
@@ -29,10 +31,11 @@ void test_cardinal() {
 	c.insertar(-460);
 	c.insertar(130);
 	c.insertar(43);
-	ASSERT(c.cardinal() == 8);
+	ASSERT_EQ(c.cardinal(), 8);
 }
 
 void test_remover() {
+    std::cout << std::endl;
 	// Chequear por lo menos los siguientes 3 casos:
  	// - Borrar una hoja
  	// - Borrar un nodo interno con un hijo
@@ -57,67 +60,276 @@ void test_remover() {
 				&& c1.pertenece(130) && c1.pertenece(43);
  	ASSERT( pertenenciaUnHijo );
 
-	std::cout << std::endl;
-	std::cout << "UN HIJO OK "<<std::endl;
+}
 
-    Conjunto<int> c2;
-    c2.insertar(42);
-    c2.insertar(44);
-    c2.insertar(104);
-    c2.insertar(450);
-    c2.insertar(-46);
-    c2.insertar(-460);
-    c2.insertar(130);
-    c2.insertar(43);
+void testRemoverHijoIHoja() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(44);
+    c.insertar(104);
+    c.insertar(450);
+    c.insertar(-46);
+    c.insertar(-460);
+    c.insertar(130);
+    c.insertar(43);
 
     bool pertenenciaHoja;
 
     // caso que chequea borrar una hoja
-	c2.remover(43);
-	pertenenciaHoja = c2.pertenece(42) && c2.pertenece(44) && c2.pertenece(104)
-                  && c2.pertenece(450) && c2.pertenece(-46) && c2.pertenece(-460)
-                  && c2.pertenece(130) && !c2.pertenece(43);
+	c.remover(43);
+	pertenenciaHoja = c.pertenece(42) && c.pertenece(44) && c.pertenece(104)
+                  && c.pertenece(450) && c.pertenece(-46) && c.pertenece(-460)
+                  && c.pertenece(130) && !c.pertenece(43);
 
 	ASSERT( pertenenciaHoja );
 
-	std::cout << "HOJA OK "<<std::endl;
+}
 
-	Conjunto<int> c3;
-	c3.insertar(42);
-	c3.insertar(44);
-	c3.insertar(104);
-	c3.insertar(450);
-	c3.insertar(-46);
-	c3.insertar(-460);
-	c3.insertar(130);
-	c3.insertar(43);
+void testRemoverRaizDosHijosGrandes() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+	c.insertar(42);
+	c.insertar(44);
+	c.insertar(104);
+	c.insertar(450);
+	c.insertar(-46);
+	c.insertar(-460);
+	c.insertar(130);
+	c.insertar(43);
 
 	bool pertenenciaDosHijos;
 
 	// caso que chequea borrar una hoja
-	c3.remover(42);
-	pertenenciaDosHijos = !c3.pertenece(42) && c3.pertenece(44) && c3.pertenece(104)
-					  && c3.pertenece(450) && c3.pertenece(-46) && c3.pertenece(-460)
-					  && c3.pertenece(130) && c3.pertenece(43);
+	c.remover(42);
+	pertenenciaDosHijos = !c.pertenece(42) && c.pertenece(44) && c.pertenece(104)
+					  && c.pertenece(450) && c.pertenece(-46) && c.pertenece(-460)
+					  && c.pertenece(130) && c.pertenece(43);
 
 	ASSERT( pertenenciaDosHijos );
 
-	std::cout << "DOS HIJOS OK "<<std::endl;
+}
 
-	std::cout << std::endl;
-	std::cout<< "c1: ";
-	c1.mostrar(std::cout);
-	std::cout << std::endl;
-	std::cout<< "c2: ";
-	c2.mostrar(std::cout);
-	std::cout << std::endl;
-	std::cout<< "c3: ";
-	c3.mostrar(std::cout);
-	// Completar
+void testRemoverBorde() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+	c.insertar(42);
+	c.insertar(44);
+	c.insertar(104);
+	c.insertar(450);
+	c.insertar(-46);
+	c.insertar(-460);
+	c.insertar(130);
+	c.insertar(43);
 
+	c.remover(-460);
+	bool elimineBorde;
+	elimineBorde = c.pertenece(42) && c.pertenece(44) && c.pertenece(104)
+						  && c.pertenece(450) && c.pertenece(-46) && !c.pertenece(-460)
+						  && c.pertenece(130) && c.pertenece(43);
+
+    ASSERT(elimineBorde);
+}
+
+void testRemoverHijoConDosHijos() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(44);
+    c.insertar(104);
+    c.insertar(450);
+    c.insertar(-46);
+    c.insertar(-460);
+    c.insertar(130);
+    c.insertar(43);
+
+    c.remover(44);
+    bool pertenece;
+    pertenece = c.pertenece(42) && !c.pertenece(44) && c.pertenece(104)
+                   && c.pertenece(450) && c.pertenece(-46) && c.pertenece(-460)
+                   && c.pertenece(130) && c.pertenece(43);
+
+    ASSERT(pertenece);
+}
+
+void testRemoverRaizSola() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.mostrar(std::cout);
+    std::cout << std::endl;
+    c.remover(42);
+    c.mostrar(std::cout);
+    std::cout << std::endl;
+}
+
+void testRemoverRaizHijoI() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(35);
+    c.mostrar(std::cout);
+    std::cout << std::endl;
+    c.remover(42);
+    c.mostrar(std::cout);
+    std::cout << std::endl;
+}
+
+void testRemoverRaizHijoD() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(70);
+    c.mostrar(std::cout);
+    std::cout << std::endl;
+    c.remover(42);
+    c.mostrar(std::cout);
+    std::cout << std::endl;
+}
+
+void testRemoverRaizDosHijos() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(35);
+    c.insertar(70);
+    c.mostrar(std::cout);
+    std::cout << std::endl;
+    c.remover(42);
+    c.mostrar(std::cout);
+    std::cout << std::endl;
+}
+
+void testRemoverMitadCaminoI1() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(35);
+    c.insertar(40);
+    c.insertar(36);
+    c.insertar(38);
+    c.insertar(37);
+    c.remover(40);
+    bool pertenece;
+    pertenece = c.pertenece(42) && c.pertenece(35) && !c.pertenece(40)
+                && c.pertenece(36) && c.pertenece(38) && c.pertenece(37);
+    ASSERT(pertenece);
+}
+
+void testRemoverMitadCaminoI2() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(35);
+    c.insertar(40);
+    c.insertar(36);
+    c.insertar(38);
+    c.insertar(37);
+    c.remover(36);
+    bool pertenece;
+    pertenece = c.pertenece(42) && c.pertenece(35) && c.pertenece(40)
+                && !c.pertenece(36) && c.pertenece(38) && c.pertenece(37);
+    ASSERT(pertenece);
+}
+
+void testRemoverMitadCaminoD1() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(60);
+    c.insertar(45);
+    c.insertar(55);
+    c.insertar(50);
+    c.insertar(53);
+    c.remover(45);
+    bool pertenece;
+    pertenece = c.pertenece(42) && c.pertenece(60) && !c.pertenece(45)
+                && c.pertenece(55) && c.pertenece(50) && c.pertenece(53);
+    ASSERT(pertenece);
+}
+
+void testRemoverMitadCaminoD2() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(60);
+    c.insertar(45);
+    c.insertar(55);
+    c.insertar(50);
+    c.insertar(53);
+    c.remover(55);
+    bool pertenece;
+    pertenece = c.pertenece(42) && c.pertenece(60) && c.pertenece(45)
+                && !c.pertenece(55) && c.pertenece(50) && c.pertenece(53);
+    ASSERT(pertenece);
+}
+
+void testRemoverHITodoD1() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(35);
+    c.insertar(36);
+    c.insertar(37);
+    c.insertar(38);
+    c.insertar(39);
+    c.remover(35);
+    bool pertenece;
+    pertenece = c.pertenece(42) && !c.pertenece(35) && c.pertenece(36)
+                && c.pertenece(37) && c.pertenece(38) && c.pertenece(39);
+    ASSERT(pertenece);
+}
+
+void testRemoverHITodoD2() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(35);
+    c.insertar(36);
+    c.insertar(37);
+    c.insertar(38);
+    c.insertar(39);
+    c.remover(37);
+    bool pertenece;
+    pertenece = c.pertenece(42) && c.pertenece(35) && c.pertenece(36)
+                && !c.pertenece(37) && c.pertenece(38) && c.pertenece(39);
+    ASSERT(pertenece);
+}
+
+void testRemoverHDTodoI1() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(66);
+    c.insertar(60);
+    c.insertar(55);
+    c.insertar(50);
+    c.insertar(45);
+    c.remover(66);
+    bool pertenece;
+    pertenece = c.pertenece(42) && !c.pertenece(66) && c.pertenece(60)
+                && c.pertenece(55) && c.pertenece(50) && c.pertenece(45);
+    ASSERT(pertenece);
+}
+
+void testRemoverHDTodoI2() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(66);
+    c.insertar(60);
+    c.insertar(55);
+    c.insertar(50);
+    c.insertar(45);
+    c.remover(55);
+    bool pertenece;
+    pertenece = c.pertenece(42) && c.pertenece(66) && c.pertenece(60)
+                && !c.pertenece(55) && c.pertenece(50) && c.pertenece(45);
+    ASSERT(pertenece);
 }
 
 void test_maximo() {
+    std::cout << std::endl;
 	Conjunto<int> c;
 	c.insertar(42);
 	c.insertar(44);
@@ -131,6 +343,7 @@ void test_maximo() {
 }
 
 void test_minimo() {
+    std::cout << std::endl;
 	Conjunto<int> c;
 	c.insertar(42);
 	c.insertar(44);
@@ -143,7 +356,20 @@ void test_minimo() {
 	ASSERT_EQ( c.minimo(), -460 );
 }
 
+void test_minimoCamino() {
+    std::cout << std::endl;
+    Conjunto<int> c;
+    c.insertar(42);
+    c.insertar(35);
+    c.insertar(40);
+    c.insertar(36);
+    c.insertar(38);
+    c.insertar(37);
+    ASSERT_EQ( c.minimo(), 35 );
+}
+
 void test_mostrar() {
+    std::cout << std::endl;
     Conjunto<int> c;
     c.insertar(15);
     c.insertar(9);
@@ -155,16 +381,59 @@ void test_mostrar() {
     c.insertar(64);
     c.insertar(26);
     c.insertar(72);
-    ASSERT_EQ( to_s(c) ,"[6, 9, 13, 14, 15, 17, 20, 26, 64, 72, ]");
+    ASSERT_EQ( to_s(c) ,"[6, 9, 13, 14, 15, 17, 20, 26, 64, 72]");
+}
+
+void printSeparator() {
+    std::cout << "====================================" << std::endl;
 }
 
 int main() {
-
+    std::cout << std::endl;
 	RUN_TEST(test_insertar);
+    printSeparator();
 	RUN_TEST(test_cardinal);
+    printSeparator();
 	RUN_TEST(test_remover);
+    printSeparator();
+    RUN_TEST(testRemoverBorde);
+    printSeparator();
+    RUN_TEST(testRemoverHijoConDosHijos);
+    printSeparator();
+    RUN_TEST(testRemoverHijoIHoja);
+    printSeparator();
+    RUN_TEST(testRemoverRaizDosHijosGrandes);
+    printSeparator();
+    RUN_TEST(testRemoverRaizSola);
+    printSeparator();
+    RUN_TEST(testRemoverRaizHijoI);
+    printSeparator();
+    RUN_TEST(testRemoverRaizHijoD);
+    printSeparator();
+    RUN_TEST(testRemoverRaizDosHijos);
+    printSeparator();
+    RUN_TEST(testRemoverMitadCaminoI1);
+    printSeparator();
+    RUN_TEST(testRemoverMitadCaminoI2);
+    printSeparator();
+    RUN_TEST(testRemoverMitadCaminoD1);
+    printSeparator();
+    RUN_TEST(testRemoverMitadCaminoD2);
+    printSeparator();
+    RUN_TEST(testRemoverHITodoD1);
+    printSeparator();
+    RUN_TEST(testRemoverHITodoD2);
+    printSeparator();
+    RUN_TEST(testRemoverHDTodoI1);
+    printSeparator();
+    RUN_TEST(testRemoverHDTodoI2);
+    printSeparator();
 	RUN_TEST(test_maximo);
+    printSeparator();
 	RUN_TEST(test_minimo);
+    printSeparator();
+    RUN_TEST(test_minimoCamino);
+    printSeparator();
     RUN_TEST(test_mostrar);
 	return 0;
 }
