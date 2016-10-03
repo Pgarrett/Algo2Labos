@@ -70,7 +70,7 @@ private:
 
     bool hasOneChild(Nodo *child);
 
-    unsigned int countChildren(Nodo *n) const;
+//    unsigned int countChildren(Nodo *n) const;
 
     void deleteTwoChildrenNode(Nodo *&father, Nodo *&child);
 
@@ -80,7 +80,6 @@ private:
 
     void deleteTwoChildrenRoot(Nodo *&father, Nodo *&child);
     void inOrder(Nodo *&r, std::ostream &os) const;
-    void runTree(Nodo *&r);
 
 };
 
@@ -161,7 +160,13 @@ void Conjunto<T>::remover(const T &clave) {
         } else {
             deleteLeafNode(father, child);
         }
-        delete child;
+        if (child->valor == father->valor) {
+            delete father;
+            father = NULL;
+            this->raiz_ = NULL;
+        } else {
+            delete child;
+        }
         child = NULL;
     }
     this->_cardinal--;
@@ -228,13 +233,13 @@ bool Conjunto<T>::hasOneChild(Nodo *child) {
     return child->izq != NULL || child->der != NULL;
 }
 
-template<class T>
-unsigned int Conjunto<T>::countChildren(Nodo *n) const {
-    if (n == NULL) {
-        return 0;
-    }
-    return 1 + countChildren(n->izq) + countChildren(n->der);
-}
+//template<class T>
+//unsigned int Conjunto<T>::countChildren(Nodo *n) const {
+//    if (n == NULL) {
+//        return 0;
+//    }
+//    return 1 + countChildren(n->izq) + countChildren(n->der);
+//}
 
 template<class T>
 void Conjunto<T>::deleteTwoChildrenNode(Nodo *&father, Nodo *&child) {
@@ -339,15 +344,6 @@ void Conjunto<T>::inOrder(Nodo *&r, std::ostream &os) const {
             os << ", ";
         }
         inOrder(r->der, os);
-    }
-}
-
-template<class T>
-void Conjunto<T>::runTree(Nodo *&r) {
-    if (r != NULL) {
-        runTree(r->izq);
-        runTree(r->der);
-        remover(r->valor);
     }
 }
 

@@ -214,6 +214,8 @@ void testRemoverMitadCaminoI1() {
     pertenece = c.pertenece(42) && c.pertenece(35) && !c.pertenece(40)
                 && c.pertenece(36) && c.pertenece(38) && c.pertenece(37);
     ASSERT(pertenece);
+    ASSERT_EQ(c.minimo(), 35);
+    ASSERT_EQ(c.maximo(), 42);
 }
 
 void testRemoverMitadCaminoI2() {
@@ -230,6 +232,8 @@ void testRemoverMitadCaminoI2() {
     pertenece = c.pertenece(42) && c.pertenece(35) && c.pertenece(40)
                 && !c.pertenece(36) && c.pertenece(38) && c.pertenece(37);
     ASSERT(pertenece);
+    ASSERT_EQ(c.minimo(), 35);
+    ASSERT_EQ(c.maximo(), 42);
 }
 
 void testRemoverMitadCaminoD1() {
@@ -246,6 +250,8 @@ void testRemoverMitadCaminoD1() {
     pertenece = c.pertenece(42) && c.pertenece(60) && !c.pertenece(45)
                 && c.pertenece(55) && c.pertenece(50) && c.pertenece(53);
     ASSERT(pertenece);
+    ASSERT_EQ(c.minimo(), 42);
+    ASSERT_EQ(c.maximo(), 60);
 }
 
 void testRemoverMitadCaminoD2() {
@@ -257,11 +263,13 @@ void testRemoverMitadCaminoD2() {
     c.insertar(55);
     c.insertar(50);
     c.insertar(53);
-    c.remover(55);
+    c.remover(60);
     bool pertenece;
-    pertenece = c.pertenece(42) && c.pertenece(60) && c.pertenece(45)
-                && !c.pertenece(55) && c.pertenece(50) && c.pertenece(53);
+    pertenece = c.pertenece(42) && !c.pertenece(60) && c.pertenece(45)
+                && c.pertenece(55) && c.pertenece(50) && c.pertenece(53);
     ASSERT(pertenece);
+    ASSERT_EQ(c.minimo(), 42);
+    ASSERT_EQ(c.maximo(), 55);
 }
 
 void testRemoverHITodoD1() {
@@ -278,6 +286,8 @@ void testRemoverHITodoD1() {
     pertenece = c.pertenece(42) && !c.pertenece(35) && c.pertenece(36)
                 && c.pertenece(37) && c.pertenece(38) && c.pertenece(39);
     ASSERT(pertenece);
+    ASSERT_EQ(c.minimo(), 36);
+    ASSERT_EQ(c.maximo(), 42);
 }
 
 void testRemoverHITodoD2() {
@@ -294,6 +304,8 @@ void testRemoverHITodoD2() {
     pertenece = c.pertenece(42) && c.pertenece(35) && c.pertenece(36)
                 && !c.pertenece(37) && c.pertenece(38) && c.pertenece(39);
     ASSERT(pertenece);
+    ASSERT_EQ(c.minimo(), 35);
+    ASSERT_EQ(c.maximo(), 42);
 }
 
 void testRemoverHDTodoI1() {
@@ -310,6 +322,8 @@ void testRemoverHDTodoI1() {
     pertenece = c.pertenece(42) && !c.pertenece(66) && c.pertenece(60)
                 && c.pertenece(55) && c.pertenece(50) && c.pertenece(45);
     ASSERT(pertenece);
+    ASSERT_EQ(c.minimo(), 42);
+    ASSERT_EQ(c.maximo(), 60);
 }
 
 void testRemoverHDTodoI2() {
@@ -326,6 +340,8 @@ void testRemoverHDTodoI2() {
     pertenece = c.pertenece(42) && c.pertenece(66) && c.pertenece(60)
                 && !c.pertenece(55) && c.pertenece(50) && c.pertenece(45);
     ASSERT(pertenece);
+    ASSERT_EQ(c.minimo(), 42);
+    ASSERT_EQ(c.maximo(), 66);
 }
 
 void test_maximo() {
