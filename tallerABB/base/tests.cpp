@@ -62,6 +62,46 @@ void test_remover() {
 
 }
 
+void test_removerHijoIRaiz() {
+    std::cout << std::endl;
+    // Chequear por lo menos los siguientes 3 casos:
+    // - Borrar una hoja
+    // - Borrar un nodo interno con un hijo
+    // - Borrrun nodo interno con dos hijos
+
+    Conjunto<int> c1;
+    c1.insertar(42);
+    c1.insertar(41);
+
+    bool pertenenciaUnHijo;
+
+    // caso que chequea borrar un nodo interno con un hijo
+    c1.remover(41);
+    pertenenciaUnHijo = c1.pertenece(42) && !c1.pertenece(41);
+    ASSERT( pertenenciaUnHijo );
+
+}
+
+void test_removerHijoDRaiz() {
+    std::cout << std::endl;
+    // Chequear por lo menos los siguientes 3 casos:
+    // - Borrar una hoja
+    // - Borrar un nodo interno con un hijo
+    // - Borrrun nodo interno con dos hijos
+
+    Conjunto<int> c1;
+    c1.insertar(42);
+    c1.insertar(44);
+
+    bool pertenenciaUnHijo;
+
+    // caso que chequea borrar un nodo interno con un hijo
+    c1.remover(44);
+    pertenenciaUnHijo = c1.pertenece(42) && !c1.pertenece(44);
+    ASSERT( pertenenciaUnHijo );
+
+}
+
 void testRemoverHijoIHoja() {
     std::cout << std::endl;
     Conjunto<int> c;
@@ -411,6 +451,10 @@ int main() {
 	RUN_TEST(test_cardinal);
     printSeparator();
 	RUN_TEST(test_remover);
+    printSeparator();
+    RUN_TEST(test_removerHijoDRaiz);
+    printSeparator();
+    RUN_TEST(test_removerHijoIRaiz);
     printSeparator();
     RUN_TEST(testRemoverBorde);
     printSeparator();

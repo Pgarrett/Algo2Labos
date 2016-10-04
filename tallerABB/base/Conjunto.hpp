@@ -70,8 +70,6 @@ private:
 
     bool hasOneChild(Nodo *child);
 
-//    unsigned int countChildren(Nodo *n) const;
-
     void deleteTwoChildrenNode(Nodo *&father, Nodo *&child);
 
     void deleteOneChildNode(Nodo *&father, Nodo *&child);
@@ -92,10 +90,8 @@ Conjunto<T>::Conjunto() : raiz_(NULL), _cardinal(0) {}
 
 template<class T>
 Conjunto<T>::~Conjunto() {
-    Nodo* r = this->raiz_;
     while (this->_cardinal != 0) {
-        remover(r->valor);
-        r = this->raiz_;
+        remover(this->raiz_->valor);
     }
 }
 
@@ -149,8 +145,8 @@ unsigned int Conjunto<T>::cardinal() const {
 
 template<class T>
 void Conjunto<T>::remover(const T &clave) {
-    Nodo *father;
-    Nodo *child;
+    Nodo *father = NULL;
+    Nodo *child = NULL;
     find(clave, father, child);
     if (child != NULL) {
         if (hasTwoChildren(child)) {
@@ -160,14 +156,14 @@ void Conjunto<T>::remover(const T &clave) {
         } else {
             deleteLeafNode(father, child);
         }
-        if (child->valor == father->valor) {
-            delete father;
-            father = NULL;
-            this->raiz_ = NULL;
-        } else {
-            delete child;
-        }
-        child = NULL;
+//        if (child->valor == father->valor) {
+//            delete father;
+//            father = NULL;
+//            this->raiz_ = NULL;
+//        } else {
+//            delete child;
+//        }
+//        child = NULL;
     }
     this->_cardinal--;
 }
@@ -175,25 +171,19 @@ void Conjunto<T>::remover(const T &clave) {
 template<class T>
 const T &Conjunto<T>::minimo() const {
     Nodo* n = this->raiz_;
-    Nodo* parent = n;
-    n = n->izq;
-    while (n != NULL) {
-        parent = n;
+    while (n->izq != NULL) {
         n = n->izq;
     }
-    return parent->valor;
+    return n->valor;
 }
 
 template<class T>
 const T& Conjunto<T>::maximo() const {
     Nodo* n = this->raiz_;
-    Nodo* parent = n;
-    n = n->der;
-    while (n != NULL) {
-        parent = n;
+    while (n->der != NULL) {
         n = n->der;
     }
-    return parent->valor;
+    return n->valor;
 }
 
 template<class T>
@@ -207,9 +197,8 @@ void Conjunto<T>::mostrar(std::ostream &os) const {
 template<class T>
 void Conjunto<T>::find(const T &key, Nodo *&f, Nodo *&c) const{
     bool exists = false;
-    Nodo* n = this->raiz_;
-    f = n;
-    c = n;
+    f = this->raiz_;
+    c = this->raiz_;
     while (c != NULL && !exists) {
         if (c->valor == key) {
             exists = true;
@@ -233,34 +222,26 @@ bool Conjunto<T>::hasOneChild(Nodo *child) {
     return child->izq != NULL || child->der != NULL;
 }
 
-//template<class T>
-//unsigned int Conjunto<T>::countChildren(Nodo *n) const {
-//    if (n == NULL) {
-//        return 0;
-//    }
-//    return 1 + countChildren(n->izq) + countChildren(n->der);
-//}
-
 template<class T>
 void Conjunto<T>::deleteTwoChildrenNode(Nodo *&father, Nodo *&child) {
     if (father->valor == child->valor) {
         deleteTwoChildrenRoot(father, child);
     } else {
-        Nodo* lastNode;
+        Nodo* lastNode = NULL;
         Nodo* n = child->izq;
         while (n != NULL) {
             lastNode = n;
             n = n->der;
         }
-        Nodo* p;
+        Nodo* p = NULL;
         find(lastNode->valor, p, lastNode);
         if (hasOneChild(lastNode)) {
             deleteOneChildNode(p, lastNode);
         } else {
             deleteLeafNode(p, lastNode);
         }
-        lastNode->der = child->der;
-        lastNode->izq = child->izq;
+//        lastNode->der = child->der;
+//        lastNode->izq = child->izq;
         if (father->izq->valor == child->valor) {
             father->izq = lastNode;
         } else {
@@ -271,67 +252,89 @@ void Conjunto<T>::deleteTwoChildrenNode(Nodo *&father, Nodo *&child) {
 
 template<class T>
 void Conjunto<T>::deleteOneChildNode(Nodo *&father, Nodo *&child) {
-    if (father->valor == child->valor) {
-        if (child->izq != NULL) {
-            this->raiz_ = new Nodo(child->izq->valor);
-            this->raiz_->izq = child->izq->izq;
-            this->raiz_->der = child->izq->der;
-        } else {
-            this->raiz_ = new Nodo(child->der->valor);
-            this->raiz_->izq = child->der->izq;
-            this->raiz_->der = child->der->der;
-        }
-    } else {
-        Nodo* v;
-        if (child->izq != NULL) {
-            v = child->izq;
-        } else {
-            v = child->der;
-        }
-        if (father->izq != NULL) {
-            if (father->izq->valor == child->valor) {
-                father->izq = v;
-            } else {
-                father->der = v;
-            }
-        } else {
-            if (father->der->valor == child->valor) {
-                father->der = v;
-            } else {
-                father->izq = v;
-            }
-        }
+//    if (father->valor == child->valor) {
+//        if (child->izq != NULL) {
+//            this->raiz_ = new Nodo(child->izq->valor);
+//            this->raiz_->izq = child->izq->izq;
+//            this->raiz_->der = child->izq->der;
+//        } else {
+//            this->raiz_ = new Nodo(child->der->valor);
+//            this->raiz_->izq = child->der->izq;
+//            this->raiz_->der = child->der->der;
+//        }
+//    } else {
+//        Nodo* v;
+//        if (child->izq != NULL) {
+//            v = child->izq;
+//        } else {
+//            v = child->der;
+//        }
+//        if (father->izq != NULL) {
+//            if (father->izq->valor == child->valor) {
+//                father->izq = v;
+//            } else {
+//                father->der = v;
+//            }
+//        } else {
+//            if (father->der->valor == child->valor) {
+//                father->der = v;
+//            } else {
+//                father->izq = v;
+//            }
+//        }
+//    }
+    Nodo* n;
+    if (child->der != NULL)
+        n = child->der;
+    else
+        n = child->izq;
+    if (child == raiz_){
+        this->raiz_ = n;
+    }else{
+        if (father->der == child)
+            father->der = n;
+        else
+            father->izq = n;
     }
+    delete(child);
+    child = NULL;
 }
 
 template<class T>
 void Conjunto<T>::deleteLeafNode(Nodo *&father, Nodo *&child) {
     if (father->valor != child->valor) {
-        if (father->izq->valor == child->valor) {
-            father->izq = NULL;
-        } else {
-            father->der = NULL;
+        if (father->izq != NULL) {
+            if (father->izq->valor == child->valor) {
+                father->izq = NULL;
+            } else {
+                father->der = NULL;
+            }
         }
+        delete(child);
+        child = NULL;
+    } else {
+        delete(this->raiz_);
+        this->raiz_ = NULL;
     }
 }
 
 template<class T>
 void Conjunto<T>::deleteTwoChildrenRoot(Nodo *&father, Nodo *&child) {
-    Nodo* lastNode;
+    Nodo* lastNode = NULL;
     Nodo* n = this->raiz_->izq;
     while (n != NULL) {
         lastNode = n;
         n = n->der;
     }
-    Nodo* p;
+    Nodo* p = NULL;
     find(lastNode->valor, p, lastNode);
     if (hasOneChild(lastNode)) {
         deleteOneChildNode(p, lastNode);
     } else {
         deleteLeafNode(p, lastNode);
     }
-    lastNode->der = father->der;
-    lastNode->izq = father->izq;
+//    lastNode->der = father->der;
+//    lastNode->izq = father->izq;
     this->raiz_ = lastNode;
 }
 
