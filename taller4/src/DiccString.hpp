@@ -88,6 +88,9 @@ class DiccString {
                 };
 
                 //TODO: funciones auxiliares
+                bool isLeafNode(const Nodo *child) const;
+                Nodo* getNode(const string clave, Nodo*& p, unsigned int step);
+                void removeLeafNode(Nodo*& p, Nodo*& c, const string clave);
 
                 Nodo* raiz;
                 Conj<string> claves;
@@ -109,9 +112,11 @@ DiccString<T>::DiccString(const DiccString& d) {
 
 template <typename T>
 DiccString<T>::~DiccString(){
-
-	//TODO
-    // assert(false);
+    while (this->claves.cardinal() != 0) {
+        string s = this->claves.minimo();
+        Borrar(s);
+        this->claves.remover(s);
+    }
 }
 
 
@@ -123,14 +128,17 @@ void DiccString<T>::Definir(const string& clave, const T& significado){
     }
     Nodo* n = this->raiz;
     for (unsigned int i = 0; i < clave.length(); i++) {
-        n = n->siguientes[(int) clave[i]];
-        if (n == NULL) {
-            n = new Nodo();
+        int c = (int) clave[i];
+        if (n->siguientes[c] == NULL) {
+            n->siguientes[c] = new Nodo();
+        }
+        n = n->siguientes[c];
+        if (i == clave.length() - 1) {
+            T* v = new T();
+            *v = significado;
+            n->definicion = v;
         }
     }
-    std::cout << "out for" << std::endl;
-    *n->definicion = significado;
-    std::cout << "defined" << std::endl;
 }
 
 
@@ -141,39 +149,72 @@ bool DiccString<T>::Definido(const string& clave) const{
 
 template <typename T>
 T& DiccString<T>::Obtener(const string& clave) {
-	T v;
+	T* v = new T();
     Nodo* n = this->raiz;
     for (int i = 0; i < clave.length(); i++) {
         n = n->siguientes[clave[i]];
-        v = *n->definicion;
+        v = n->definicion;
     }
-    return v;
+    return *v;
 }
 
 
 template <typename T>
 const T& DiccString<T>::Obtener(const string& clave) const {
-	T v;
+    T* v = new T();
     Nodo* n = this->raiz;
     for (int i = 0; i < clave.length(); i++) {
         n = n->siguientes[clave[i]];
-        v = *n->definicion;
+        v = n->definicion;
     }
-    return v;
+    return *v;
 }
 
 
 template <typename T>
 const Conj<string>& DiccString<T>::Claves() const{
-    return claves;
+    return this->claves;
 }
 
 
 template <typename T>
 void DiccString<T>::Borrar(const string& clave) {
-	//TODO
-    assert(false);
+    Nodo* p = NULL;
+	Nodo* n = getNode(clave, p, clave.length());
+    if (isLeafNode(n)) {
+        removeLeafNode(p, n, clave);
+    }
+    this->claves.remover(clave);
 }
 
+template <typename T>
+bool DiccString<T>::isLeafNode(const Nodo* n) const {
+    for (unsigned int i = 0; i < 256; i++) {
+        if (n->siguientes[i] != NULL) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template <typename T>
+typename DiccString<T>::Nodo* DiccString<T>::getNode(const string clave, Nodo*& p, unsigned int step) {
+    Nodo* n = this->raiz;
+    for (unsigned int i = 0; i < step; i++) {
+        p = n;
+        n = n->siguientes[clave[i]];
+    }
+    return n;
+}
+
+template <typename T>
+void DiccString<T>::removeLeafNode(Nodo*& p, Nodo*& c, const string clave) {
+    while (isLeafNode(c)) {
+        delete c;
+        c = NULL;
+        c = getNode(clave, p, clave.length() - 1);
+        removeLeafNode(p, c, clave);
+    }
+}
 
 #endif
