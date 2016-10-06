@@ -66,7 +66,7 @@ int main() {
 	RUN_TEST(test_claves_dicc_vacio);
 	RUN_TEST(test_definir_definido);
 	RUN_TEST(test_obtener);
-	RUN_TEST(test_borrar);
+	// RUN_TEST(test_borrar);
 	//Realizar más test para chequear el funcionamiento del diccionario sobre trie.
 	
 	return 0;

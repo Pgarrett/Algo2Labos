@@ -104,44 +104,62 @@ template <typename T>
 DiccString<T>::DiccString(const DiccString& d) {
 
 	//TODO
-    assert(false);
+    // assert(false);
 }
 
 template <typename T>
 DiccString<T>::~DiccString(){
 
 	//TODO
-    assert(false);
+    // assert(false);
 }
 
 
 template <typename T>
 void DiccString<T>::Definir(const string& clave, const T& significado){
-    
-    //TODO
-    assert(false);
+    this->claves.insertar(clave);
+    if (this->raiz == NULL) {
+        this->raiz = new Nodo();
+    }
+    Nodo* n = this->raiz;
+    for (unsigned int i = 0; i < clave.length(); i++) {
+        n = n->siguientes[(int) clave[i]];
+        if (n == NULL) {
+            n = new Nodo();
+        }
+    }
+    std::cout << "out for" << std::endl;
+    *n->definicion = significado;
+    std::cout << "defined" << std::endl;
 }
 
 
 template <typename T>
 bool DiccString<T>::Definido(const string& clave) const{
-    //TODO
-    assert(false);
+    return this->claves.pertenece(clave);
 }
 
 template <typename T>
 T& DiccString<T>::Obtener(const string& clave) {
-	
-	//TODO
-    assert(false);
+	T v;
+    Nodo* n = this->raiz;
+    for (int i = 0; i < clave.length(); i++) {
+        n = n->siguientes[clave[i]];
+        v = *n->definicion;
+    }
+    return v;
 }
 
 
 template <typename T>
 const T& DiccString<T>::Obtener(const string& clave) const {
-	
-    //TODO
-    assert(false);
+	T v;
+    Nodo* n = this->raiz;
+    for (int i = 0; i < clave.length(); i++) {
+        n = n->siguientes[clave[i]];
+        v = *n->definicion;
+    }
+    return v;
 }
 
 
