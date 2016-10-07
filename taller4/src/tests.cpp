@@ -61,12 +61,75 @@ void test_borrar() {
 
 }
 
+void test_copia() {
+
+    DiccString<int> d1;
+    d1.Definir("hola",42);
+    d1.Definir("casa",22);
+    ASSERT( d1.Definido("hola") );
+    ASSERT( d1.Definido("casa") );
+    DiccString<int> d2;
+    d2 = d1;
+    d1.Definir("casona", 19);
+    ASSERT( d2.Definido("hola") );
+    ASSERT( d2.Definido("casa") );
+    ASSERT( d1.Definido("casona") );
+    ASSERT( !d2.Definido("casona") );
+}
+
+void test_borrarConHijos() {
+
+    DiccString<int> d1;
+    d1.Definir("hola", 42);
+    d1.Definir("casa", 22);
+    d1.Definir("casona", 19);
+    ASSERT( d1.Definido("hola") );
+    ASSERT( d1.Definido("casa") );
+    ASSERT( d1.Definido("casona") );
+    d1.Borrar("casa");
+    ASSERT( d1.Definido("hola") );
+    ASSERT( !d1.Definido("casa") );
+    ASSERT( d1.Definido("casona") );
+}
+
+void test_borrarPrefijo() {
+
+    DiccString<int> d1;
+    d1.Definir("hola",42);
+    d1.Definir("casa",22);
+    d1.Definir("casona", 19);
+    d1.Definir("a", 23);
+    ASSERT( d1.Definido("hola") );
+    ASSERT( d1.Definido("casa") );
+    ASSERT( d1.Definido("casona") );
+    ASSERT( d1.Definido("a") );
+    d1.Borrar("a");
+    ASSERT( d1.Definido("hola") );
+    ASSERT( d1.Definido("casa") );
+    ASSERT( d1.Definido("casona") );
+    ASSERT( !d1.Definido("a") );
+    d1.Definir("ca", 152);
+    ASSERT( d1.Definido("hola") );
+    ASSERT( d1.Definido("casa") );
+    ASSERT( d1.Definido("casona") );
+    ASSERT( d1.Definido("ca") );
+    d1.Borrar("ca");
+    ASSERT( d1.Definido("hola") );
+    ASSERT( d1.Definido("casa") );
+    ASSERT( d1.Definido("casona") );
+    ASSERT( !d1.Definido("ca") );
+}
+
 
 int main() {
 	RUN_TEST(test_claves_dicc_vacio);
 	RUN_TEST(test_definir_definido);
 	RUN_TEST(test_obtener);
 	RUN_TEST(test_borrar);
+    RUN_TEST(test_borrarConHijos);
+//    RUN_TEST(test_copia);
+    RUN_TEST(test_borrarPrefijo);
+    RUN_TEST(test_copia);
 	//Realizar más test para chequear el funcionamiento del diccionario sobre trie.
 	
 	return 0;

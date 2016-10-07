@@ -91,6 +91,7 @@ class DiccString {
                 bool isLeafNode(const Nodo *child) const;
                 Nodo* getNode(const string clave, Nodo*& p, unsigned int step);
                 void removeLeafNode(Nodo*& p, Nodo*& c, const string clave);
+                void removeIntermediateValue(Nodo*& n);
 
                 Nodo* raiz;
                 Conj<string> claves;
@@ -105,16 +106,21 @@ DiccString<T>::DiccString()
 
 template <typename T>
 DiccString<T>::DiccString(const DiccString& d) {
-
-	//TODO
-    // assert(false);
+    Conj<string> c;
+    c = d.claves;
+    T* v;
+    while (c.cardinal() != 0 ) {
+        v = d.Obtener(c.minimo());
+        this->Definir(c.minimo(), v);
+        c.remover(c.minimo());
+    }
 }
 
 template <typename T>
 DiccString<T>::~DiccString(){
     while (this->claves.cardinal() != 0) {
         string s = this->claves.minimo();
-        Borrar(s);
+        this->Borrar(s);
         this->claves.remover(s);
     }
 }
@@ -149,10 +155,11 @@ bool DiccString<T>::Definido(const string& clave) const{
 
 template <typename T>
 T& DiccString<T>::Obtener(const string& clave) {
-	T* v = new T();
+	T* v;
     Nodo* n = this->raiz;
-    for (int i = 0; i < clave.length(); i++) {
-        n = n->siguientes[clave[i]];
+    for (unsigned int i = 0; i < clave.length(); i++) {
+        int c = (int) clave[i];
+        n = n->siguientes[c];
         v = n->definicion;
     }
     return *v;
@@ -161,7 +168,7 @@ T& DiccString<T>::Obtener(const string& clave) {
 
 template <typename T>
 const T& DiccString<T>::Obtener(const string& clave) const {
-    T* v = new T();
+    T* v;
     Nodo* n = this->raiz;
     for (int i = 0; i < clave.length(); i++) {
         n = n->siguientes[clave[i]];
@@ -183,6 +190,8 @@ void DiccString<T>::Borrar(const string& clave) {
 	Nodo* n = getNode(clave, p, clave.length());
     if (isLeafNode(n)) {
         removeLeafNode(p, n, clave);
+    } else {
+        removeIntermediateValue(n);
     }
     this->claves.remover(clave);
 }
@@ -202,19 +211,36 @@ typename DiccString<T>::Nodo* DiccString<T>::getNode(const string clave, Nodo*& 
     Nodo* n = this->raiz;
     for (unsigned int i = 0; i < step; i++) {
         p = n;
-        n = n->siguientes[clave[i]];
+        int c = (int)clave[i];
+        n = n->siguientes[c];
     }
     return n;
 }
 
 template <typename T>
 void DiccString<T>::removeLeafNode(Nodo*& p, Nodo*& c, const string clave) {
-    while (isLeafNode(c)) {
-        delete c;
-        c = NULL;
-        c = getNode(clave, p, clave.length() - 1);
-        removeLeafNode(p, c, clave);
+    int i = clave.length();
+    while (i > 0) {
+        if (isLeafNode(c)) {
+            delete[] c->siguientes;
+            c->siguientes = NULL;
+//            T* v;
+//            v = c->definicion;
+//            delete v;
+//            v = NULL;
+            delete c;
+            c = NULL;
+        }
+        c = getNode(clave, p, i);
+        i--;
     }
+}
+
+template <typename T>
+void DiccString<T>::removeIntermediateValue(Nodo*& n) {
+    T* v;
+    v = n->definicion;
+    delete v;
 }
 
 #endif
