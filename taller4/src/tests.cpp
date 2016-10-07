@@ -68,8 +68,8 @@ void test_copia() {
     d1.Definir("casa",22);
     ASSERT( d1.Definido("hola") );
     ASSERT( d1.Definido("casa") );
-    DiccString<int> d2;
-    d2 = d1;
+    DiccString<int> d2 = DiccString<int>(d1);
+    // d2 = d1;
     d1.Definir("casona", 19);
     ASSERT( d2.Definido("hola") );
     ASSERT( d2.Definido("casa") );
@@ -127,9 +127,9 @@ int main() {
 	RUN_TEST(test_obtener);
 	RUN_TEST(test_borrar);
     RUN_TEST(test_borrarConHijos);
-//    RUN_TEST(test_copia);
-    RUN_TEST(test_borrarPrefijo);
     RUN_TEST(test_copia);
+    RUN_TEST(test_borrarPrefijo);
+//    RUN_TEST(test_copia);
 	//Realizar más test para chequear el funcionamiento del diccionario sobre trie.
 	
 	return 0;

@@ -106,9 +106,11 @@ DiccString<T>::DiccString()
 
 template <typename T>
 DiccString<T>::DiccString(const DiccString& d) {
+    this->raiz = NULL;
+//    this->claves;
     Conj<string> c;
     c = d.claves;
-    T* v;
+    T v;
     while (c.cardinal() != 0 ) {
         v = d.Obtener(c.minimo());
         this->Definir(c.minimo(), v);
@@ -171,7 +173,8 @@ const T& DiccString<T>::Obtener(const string& clave) const {
     T* v;
     Nodo* n = this->raiz;
     for (int i = 0; i < clave.length(); i++) {
-        n = n->siguientes[clave[i]];
+        int c = (int) clave[i];
+        n = n->siguientes[c];
         v = n->definicion;
     }
     return *v;
