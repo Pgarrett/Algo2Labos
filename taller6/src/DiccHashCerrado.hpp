@@ -52,9 +52,9 @@ private:
 
 		Nat hash = 0;
         for (unsigned int i = 0; i < str.length(); i++) {
-            hash += charToNat(str[i]);
+            hash += (charToNat(str[i]) /** 2^(str.length() - i)*/);
         }
-		hash = (hash * hash) % _tam;
+		hash = hash % _tam;
 
 		return hash;
 	}
@@ -65,13 +65,24 @@ private:
 
 
 	void redimensionarTabla(){
-//		assert(false);
         Lista<TElem>* nuevaTabla = new Lista<TElem>[this->_tam * 2];
-        for (unsigned int i = 0; i < this->_tam; i++) {
-            nuevaTabla[i] = _tabla[i];
-        }
-        this->_tabla = nuevaTabla;
+        typename Lista<TElem>::Iterador it;
+
+        Nat tamViejo = this->_tam;
         this->_tam = this->_tam * 2;
+        for (unsigned int i = 0; i < tamViejo; i++) {
+            it = _tabla[i].CrearIt();
+            while (it.HaySiguiente()) {
+                K key = it.Siguiente().clave;
+                nuevaTabla[fn_hash(key)].AgregarAtras(it.Siguiente());
+                if (it.HaySiguiente()) {
+                    it.Avanzar();
+                }
+            }
+        }
+
+        delete [] _tabla;
+        this->_tabla = nuevaTabla;
     }
 
 };
@@ -91,6 +102,7 @@ template<class S>
 DiccHashCerrado<S>::~DiccHashCerrado() {
 	
     delete [] _tabla;
+    this->_cant_elems = 0;
 }
 
 template<class S>
@@ -150,7 +162,7 @@ S& DiccHashCerrado<S>::Significado(const K& clave) {
 
     it = _tabla[hashValue].CrearIt();
     bool found = false;
-    S result;
+    S result = NULL;
     while (it.HaySiguiente() && !found) {
         if (it.Siguiente().clave == clave) {
             found = true;
