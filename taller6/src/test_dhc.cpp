@@ -645,9 +645,9 @@ int main() {
 	RUN_TEST(test_CantClaves);
 	RUN_TEST(test_claves);
 	RUN_TEST(test_redimensionado);
-	RUN_TEST(test_colisiones_libretas);
-    RUN_TEST(test_colisiones_gauss);
-    RUN_TEST(test_colisiones_uniforme);
+//	RUN_TEST(test_colisiones_libretas);
+//    RUN_TEST(test_colisiones_gauss);
+//    RUN_TEST(test_colisiones_uniforme);
 
 	return 0;
 }
