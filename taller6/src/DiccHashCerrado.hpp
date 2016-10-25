@@ -57,9 +57,9 @@ namespace aed2 {
 
         Nat fn_hash(const String &str) const {
 
-            Nat hash = 0;
+            Nat hash = 1;
             for (unsigned int i = 0; i < str.length(); i++) {
-                hash += (charToNat(str[i]) /** 2^(str.length() - i)*/);
+                hash = (hash * 53) + charToNat(str[i]);
             }
             hash = hash % _tam;
 
@@ -73,7 +73,6 @@ namespace aed2 {
 
         void redimensionarTabla() {
             typename Lista<TElem>::Iterador itViejo;
-
             Nat tamViejo = this->_tam;
             this->_tam = this->_tam * 2;
             Lista<TElem> *tablaVieja = this->_tabla;
@@ -135,7 +134,7 @@ namespace aed2 {
         if (this->Definido(clave)) {
             this->Borrar(clave);
         }
-        this->_tabla[fn_hash(clave)].AgregarAtras(*new TElem(clave, significado));
+        this->_tabla[fn_hash(clave)].AgregarAtras(TElem(clave, significado));
         this->_cant_elems++;
     }
 
@@ -149,15 +148,15 @@ namespace aed2 {
 
         it = this->_tabla[hashValue].CrearIt();
         bool found = false;
-        S result;
+        typename Lista<TElem>::Iterador result;
         while (it.HaySiguiente() && !found) {
             if (it.Siguiente().clave == clave) {
                 found = true;
-                result = it.Siguiente().signif;
+                result = it;
             }
             it.Avanzar();
         }
-        return *(new S(result));
+        return result.Siguiente().signif;
     }
 
 
